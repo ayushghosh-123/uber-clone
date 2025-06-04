@@ -41,7 +41,7 @@ userSchema.methods.generateAuthToken = function () {
   return webtoken.sign(
     { _id: this._id },
     process.env.JWT_SECRET,
-    { expiresIn: '7d' } // Optional expiration
+    { expiresIn: '24h' } // Optional expiration
   );
 };
 
@@ -54,6 +54,8 @@ userSchema.methods.comparePassword = async function (password) {
 userSchema.statics.hashPassword = async function (password) {
   return await bcrypt.hash(password, 10);
 };
+
+
 
 const userModel = mongoose.model('User', userSchema);
 module.exports = userModel;

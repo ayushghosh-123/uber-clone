@@ -233,6 +233,157 @@ curl -X POST http://localhost:PORT/user/login \
   }'
 ```
 
+# User Profile Endpoint Documentation
+
+## Endpoint
+
+`GET /user/profile`
+
+---
+
+## Description
+
+This endpoint retrieves the authenticated user's profile information. The request must include a valid JWT token in the `Authorization` header or as a cookie.
+
+---
+
+## Authentication
+
+- **Required:** Yes (JWT token)
+- **How:**  
+  - Header: `Authorization: Bearer <token>`  
+  - Or Cookie: `token=<token>`
+
+---
+
+## Responses
+
+### Success
+
+- **Status Code:** `200 OK`
+- **Body:**
+    ```json
+    {
+      "user": {
+        "_id": "user_id",
+        "fullname": {
+          "firstname": "John",
+          "lastname": "Doe"
+        },
+        "email": "johndoe@example.com",
+        "socketId": null
+      }
+    }
+    ```
+
+### Unauthorized
+
+- **Status Code:** `401 Unauthorized`
+- **Body:**
+    ```json
+    {
+      "message": "Authentication required"
+    }
+    ```
+
+### User Not Found
+
+- **Status Code:** `404 Not Found`
+- **Body:**
+    ```json
+    {
+      "message": "User not found"
+    }
+    ```
+
+---
+
+## Example Request
+
+```bash
+curl -X GET http://localhost:PORT/user/profile \
+  -H "Authorization: Bearer <jwt_token>"
+```
+
+---
+
+# User Logout Endpoint Documentation
+
+## Endpoint
+
+`GET /user/logout`
+
+---
+
+## Description
+
+This endpoint logs out the authenticated user by blacklisting their JWT token and clearing the authentication cookie. The request must include a valid JWT token in the `Authorization` header or as a cookie.
+
+---
+
+## Authentication
+
+- **Required:** Yes (JWT token)
+- **How:**  
+  - Header: `Authorization: Bearer <token>`  
+  - Or Cookie: `token=<token>`
+
+---
+
+## Responses
+
+### Success
+
+- **Status Code:** `200 OK`
+- **Body:**
+    ```json
+    {
+      "message": "Logged out successfully"
+    }
+    ```
+
+### No Token Provided
+
+- **Status Code:** `400 Bad Request`
+- **Body:**
+    ```json
+    {
+      "message": "No token provided"
+    }
+    ```
+
+### Unauthorized
+
+- **Status Code:** `401 Unauthorized`
+- **Body:**
+    ```json
+    {
+      "message": "Authentication required"
+    }
+    ```
+
+### Server Error
+
+- **Status Code:** `500 Internal Server Error`
+- **Body:**
+    ```json
+    {
+      "error": "Error message"
+    }
+    ```
+
+---
+
+## Example Request
+
+```bash
+curl -X GET http://localhost:PORT/user/logout \
+  -H "Authorization: Bearer <jwt_token>"
+```
+
+---
+
+
 ---
 
 ## Notes

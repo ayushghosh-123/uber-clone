@@ -1,6 +1,7 @@
 const userModel = require ('../models/user.model')
 const { validationResult } = require('express-validator');
 const userService = require ('../Services/user.service')
+const blacklistTokenModel = require('../models/blaclistToken.model');
 
 module.exports.register = async (req, res, next) => {
 
@@ -40,8 +41,44 @@ module.exports.loginUser = async (req, res, next) => {
         }
 
         const token = user.generateAuthToken();
+
+        res.cookie('token', token);
         res.status(200).json({ user, token });
     } catch (error) {
         next(error);
     }
 }
+
+module.exports.getUserProfile = async (req, res, next) => {
+    try {
+        const user = req.user;
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        res.status(200).json({ user });
+    } catch (error) {
+        next(error);
+    }
+}
+
+module.exports.logoutUser = async (req, res, next) => {
+    try {
+        const token = req.cookies.token || req.headers.authorization?.split(' ')[1];
+
+        if (!token) {
+            return res.status(400).json({ message: 'No token provided' });
+        }
+
+        // Check if token is already blacklisted
+        const exists = await blacklistTokenModel.findOne({ token });
+
+        if (!exists) {
+            await blacklistTokenModel.create({ token });
+        }
+
+        res.clearCookie('token');
+        res.status(200).json({ message: 'Logged out successfully' });
+    } catch (error) {
+        next(error);
+    }
+};
