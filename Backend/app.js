@@ -8,9 +8,16 @@ app.use(cors());
 const connectDB = require('./db/db');
 connectDB();
 
+const userRoutes = require('./routes/user.routes');
+
 app.get('/', (req, res) => {
     res.send('Hello World!');
 });
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use('/user', userRoutes);
 
 
 module.exports = app;
