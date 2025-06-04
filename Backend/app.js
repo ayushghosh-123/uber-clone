@@ -5,6 +5,9 @@ const app = express();
 const cors = require('cors');
 app.use(cors());
 
+const connectDB = require('./db/db');
+connectDB();
+
 app.get('/', (req, res) => {
     res.send('Hello World!');
 });
