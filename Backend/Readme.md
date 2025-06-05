@@ -383,10 +383,142 @@ curl -X GET http://localhost:PORT/user/logout \
 
 ---
 
+## Notes
+
+- Both fields are required.
+- On success, you will receive a JWT token for authentication in subsequent requests.
+
+---
+
+# Captain Registration Endpoint Documentation
+
+## Endpoint
+
+`POST /captain/register`
+
+---
+
+## Description
+
+This endpoint allows a new captain to register by providing their full name, email, password, and vehicle details. Upon successful registration, the endpoint returns the created captain object.
+
+---
+
+## Request Body
+
+Send a JSON object with the following structure:
+
+```json
+{
+  "fullname": {
+    "firstname": "John",
+    "lastname": "Doe"
+  },
+  "email": "johndoe@example.com",
+  "password": "yourpassword",
+  "vehicle": {
+    "color": "Red",
+    "plate": "ABC123",
+    "capacity": 4,
+    "vehicleType": "car"
+  }
+}
+```
+
+### Field Requirements
+
+- `fullname.firstname` (string, required): Minimum 3 characters.
+- `fullname.lastname` (string, required): Minimum 3 characters.
+- `email` (string, required): Must be a valid email address.
+- `password` (string, required): Minimum 6 characters.
+- `vehicle.color` (string, required): Minimum 3 characters.
+- `vehicle.plate` (string, required): Minimum 3 characters.
+- `vehicle.capacity` (integer, required): Minimum value 1.
+- `vehicle.vehicleType` (string, required): Must be one of: `car`, `motorcycle`, `auto`.
+
+---
+
+## Responses
+
+### Success
+
+- **Status Code:** `201 Created`
+- **Body:**
+    ```json
+    {
+      "captain": {
+        "_id": "captain_id",
+        "fullname": {
+          "firstname": "John",
+          "lastname": "Doe"
+        },
+        "email": "johndoe@example.com",
+        "vehicle": {
+          "color": "Red",
+          "plate": "ABC123",
+          "capacity": 4,
+          "vehicleType": "car"
+        }
+      }
+    }
+    ```
+
+### Validation Error
+
+- **Status Code:** `400 Bad Request`
+- **Body:**
+    ```json
+    {
+      "errors": [
+        {
+          "msg": "First name must be at least 3 characters long",
+          "param": "fullname.firstname",
+          "location": "body"
+        },
+        {
+          "msg": "Invalid email address",
+          "param": "email",
+          "location": "body"
+        }
+        // ...other validation errors
+      ]
+    }
+    ```
+
+### Server Error
+
+- **Status Code:** `500 Internal Server Error`
+- **Body:**
+    ```json
+    {
+      "error": "Error message"
+    }
+    ```
+
+---
+
+## Example Request
+
+```bash
+curl -X POST http://localhost:PORT/captain/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "fullname": { "firstname": "Jane", "lastname": "Smith" },
+    "email": "janesmith@example.com",
+    "password": "securepassword",
+    "vehicle": {
+      "color": "Blue",
+      "plate": "XYZ789",
+      "capacity": 4,
+      "vehicleType": "car"
+    }
+  }'
+```
 
 ---
 
 ## Notes
 
-- Both fields are required.
-- On success, you will receive a JWT token for authentication in subsequent requests.
+- All fields are required.
+- The `vehicleType` must be one of: `car`, `motorcycle`, or `auto`.
+

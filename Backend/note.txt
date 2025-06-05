@@ -1,1 +1,23 @@
 TTL - TIME TO LEAVE 
+
+{
+    "message": "Captain registered successfully",
+    "captain": {
+        "fullname": {
+            "firstname": "test_captain firstnam4",
+            "lastname": "test_captain lastname5"
+        },
+        "email": "test4_email@gmail.com",
+        "password": "$2b$10$wImG6PKTUhRqP/N.7TcYj.6m4RgWRENAjY5a8dfnRQ1O84LIdk2lq",
+        "socketID": null,
+        "status": "inactive",
+        "vehicle": {
+            "color": "red",
+            "plate": "MP 04 XY 6204",
+            "capacity": 3,
+            "vehicleType": "car"
+        },
+        "_id": "6841e116d7bd1b2ee6f9c592",
+        "__v": 0
+    }
+}

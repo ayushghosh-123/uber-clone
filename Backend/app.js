@@ -7,6 +7,8 @@ app.use(cors());
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
 
+const captainRoutes = require('./routes/captain.routes');
+
 const connectDB = require('./db/db');
 connectDB();
 
@@ -20,6 +22,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/user', userRoutes);
+app.use('/captain', captainRoutes);
 
 
 module.exports = app;
