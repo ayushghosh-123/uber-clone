@@ -515,6 +515,251 @@ curl -X POST http://localhost:PORT/captain/register \
   }'
 ```
 
+# Captain Login Endpoint Documentation
+
+## Endpoint
+
+`POST /captain/login`
+
+---
+
+## Description
+
+This endpoint allows a captain to log in using their email and password. If the credentials are valid, the endpoint returns a JWT authentication token.
+
+---
+
+## Request Body
+
+```json
+{
+  "email": "captain@example.com",
+  "password": "yourpassword"
+}
+```
+
+### Field Requirements
+
+- `email` (string, required): Must be a valid email address.
+- `password` (string, required): Minimum 6 characters.
+
+---
+
+## Responses
+
+### Success
+
+- **Status Code:** `200 OK`
+- **Body:**
+    ```json
+    {
+      "message": "Login successful",
+      "token": "jwt_token_here"
+    }
+    ```
+
+### Validation Error
+
+- **Status Code:** `400 Bad Request`
+- **Body:**
+    ```json
+    {
+      "errors": [
+        {
+          "msg": "Invalid email address",
+          "param": "email",
+          "location": "body"
+        },
+        {
+          "msg": "Password must be at least 6 characters long",
+          "param": "password",
+          "location": "body"
+        }
+      ]
+    }
+    ```
+
+### Captain Not Found
+
+- **Status Code:** `404 Not Found`
+- **Body:**
+    ```json
+    {
+      "error": "Captain not found"
+    }
+    ```
+
+### Invalid Password
+
+- **Status Code:** `401 Unauthorized`
+- **Body:**
+    ```json
+    {
+      "error": "Invalid password"
+    }
+    ```
+
+---
+
+## Example Request
+
+```bash
+curl -X POST http://localhost:PORT/captain/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "captain@example.com",
+    "password": "yourpassword"
+  }'
+```
+
+---
+
+# Captain Profile Endpoint Documentation
+
+## Endpoint
+
+`GET /captain/profile`
+
+---
+
+## Description
+
+This endpoint retrieves the authenticated captain's profile information. The request must include a valid JWT token in the `Authorization` header or as a cookie.
+
+---
+
+## Authentication
+
+- **Required:** Yes (JWT token)
+- **How:**  
+  - Header: `Authorization: Bearer <token>`  
+  - Or Cookie: `token=<token>`
+
+---
+
+## Responses
+
+### Success
+
+- **Status Code:** `200 OK`
+- **Body:**
+    ```json
+    {
+      "captain": {
+        "_id": "6841e116d7bd1b2ee6f9c592",
+        "fullname": {
+          "firstname": "test_captain firstnam4",
+          "lastname": "test_captain lastname5"
+        },
+        "email": "test4_email@gmail.com",
+        "socketID": null,
+        "status": "inactive",
+        "vehicle": {
+          "color": "red",
+          "plate": "MP 04 XY 6204",
+          "capacity": 3,
+          "vehicleType": "car"
+        },
+        "__v": 0
+      }
+    }
+    ```
+
+### Unauthorized
+
+- **Status Code:** `401 Unauthorized`
+- **Body:**
+    ```json
+    {
+      "message": "Authentication required"
+    }
+    ```
+
+### Captain Not Found
+
+- **Status Code:** `404 Not Found`
+- **Body:**
+    ```json
+    {
+      "error": "Captain not found"
+    }
+    ```
+
+---
+
+## Example Request
+
+```bash
+curl -X GET http://localhost:PORT/captain/profile \
+  -H "Authorization: Bearer <jwt_token>"
+```
+
+---
+
+# Captain Logout Endpoint Documentation
+
+## Endpoint
+
+`GET /captain/logout`
+
+---
+
+## Description
+
+This endpoint logs out the authenticated captain by blacklisting their JWT token and clearing the authentication cookie. The request must include a valid JWT token in the `Authorization` header or as a cookie.
+
+---
+
+## Authentication
+
+- **Required:** Yes (JWT token)
+- **How:**  
+  - Header: `Authorization: Bearer <token>`  
+  - Or Cookie: `token=<token>`
+
+---
+
+## Responses
+
+### Success
+
+- **Status Code:** `200 OK`
+- **Body:**
+    ```json
+    {
+      "message": "Logout successful"
+    }
+    ```
+
+### No Token Provided
+
+- **Status Code:** `401 Unauthorized`
+- **Body:**
+    ```json
+    {
+      "message": "Authentication token is missing"
+    }
+    ```
+
+### Server Error
+
+- **Status Code:** `500 Internal Server Error`
+- **Body:**
+    ```json
+    {
+      "error": "Error message"
+    }
+    ```
+
+---
+
+## Example Request
+
+```bash
+curl -X GET http://localhost:PORT/captain/logout \
+  -H "Authorization: Bearer <jwt_token>"
+```
+
 ---
 
 ## Notes
