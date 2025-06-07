@@ -1,26 +1,37 @@
-import React, { useState } from "react";
-import uberDriverLogo from "../images/uber-driver.png"; // Assuming you have a different logo for the captain
+import React, { useState, useContext } from "react";
+import uberDriverLogo from "../images/uber-driver.png";
 import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { CaptainDataContext } from "../context/CaptainContex";
 
 function CaptainLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [captainLoginData, setCaptainLoginData] = useState({});
-  const navigate = useNavigate(); // Optional if redirect needed after login
+  const { captain, setCaptain } = useContext(CaptainDataContext); // Corrected context usage
+  const navigate = useNavigate();
 
-  const submitHandler = (e) => {
+  const submitHandler = async (e) => {
     e.preventDefault();
 
-    // Basic example: simulate login
-    setCaptainLoginData({ email, password });
-    // console.log(captainLoginData);
+    const captain = { email, password };
 
-    // Clear input fields
-    setEmail(" ");
-    setPassword(" ");
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/captain/login`, captain);
 
-    // Optionally navigate to user dashboard
-    // navigate("/user-dashboard");
+      if (response.status === 200) {
+        const data = response.data;
+        setCaptain(data.captain); // Correct setter
+        localStorage.setItem("token", data.token);
+        navigate("/captain-home");
+      }
+
+      // Clear input fields
+      setEmail("");
+      setPassword("");
+    } catch (error) {
+      console.error("Login failed:", error);
+      alert("Login failed. Please check your credentials.");
+    }
   };
 
   return (
@@ -28,7 +39,7 @@ function CaptainLogin() {
       <div className="w-full max-w-md">
         <img className="w-16 mb-10" src={uberDriverLogo} alt="Uber Driver Logo" />
 
-        <form onSubmit={(e) => submitHandler(e)} className="w-full">
+        <form onSubmit={submitHandler} className="w-full">
           <h3 className="text-lg font-medium mb-2">What's your email?</h3>
           <input
             className="border border-gray-300 p-2 rounded mb-7 bg-[#eeeeee] w-full text-lg placeholder:text-base"
@@ -57,7 +68,7 @@ function CaptainLogin() {
           </button>
 
           <p className="text-center">
-            joint a fleet?
+            Join a fleet?{" "}
             <Link className="text-blue-500" to="/captain-signup">
               Register as Captain
             </Link>

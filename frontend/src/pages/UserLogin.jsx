@@ -1,25 +1,40 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import uberLogo from "../images/uber.png";
 import { Link, useNavigate } from "react-router-dom";
+import { UserContext } from "../context/Usercontex";
+import axios from "axios";
 
 function UserLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [userLoginData, setUserLoginData] = useState({});
   const navigate = useNavigate(); // Optional if redirect needed after login
 
-  const submitHandler = (e) => {
+  const { user, setUser } = useContext(UserContext);
+
+  const submitHandler = async (e) => {
     e.preventDefault();
 
     // Basic example: simulate login
-    setUserLoginData({ email, password });
+    const loginData = { email: email, password: password };
+try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/user/login`,
+        loginData
+      );
 
-    // Clear input fields
-    setEmail(" ");
-    setPassword(" ");
-
-    // Optionally navigate to user dashboard
-    // navigate("/user-dashboard");
+      if (response.status === 200) {
+        const data = response.data;
+        setUser(data.user);
+        localStorage.setItem('token', data.token);
+        navigate('/home'); // Optional
+      }
+         // Clear form
+        setEmail("");
+        setPassword("");
+    } catch (error) {
+      console.error("Registration failed:", error);
+      alert("Registration failed. Please try again.");
+    }
   };
 
   return (
