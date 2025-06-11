@@ -12,7 +12,7 @@ const Lookingfordriver = forwardRef(
       >
         <button
           className="absolute top-3 right-6 text-2xl"
-          onClick={() => setConfirmRidePanel(false)}
+          onClick={() => setvehicleFound(false)}
         >
           <i className="ri-close-line"></i>
         </button>

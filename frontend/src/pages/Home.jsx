@@ -9,6 +9,7 @@ import Vehiclepannel from "../component/Vehiclepannel";
 import Conformride from "../component/Conformride";
 import Lookingfordriver from "../component/lookingfordriver";
 import Waitingfordriver from "../component/Waitingfordriver";
+import Riding from "./Riding";
 
 gsap.registerPlugin(useGSAP);
 
@@ -175,9 +176,13 @@ function Home() {
 
       <Waitingfordriver 
       ref={waitingForDriverRef}
+      selectedVehicle={selectedVehicle}
       waitingForDriver={waitingForDriver}
       setwaitingForDriver={setwaitingForDriver}
-      setvehicleFound={setvehicleFound}
+      />
+
+      <Riding
+      selectedVehicle={selectedVehicle}
       />
     </div>
   );

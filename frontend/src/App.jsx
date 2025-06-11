@@ -9,6 +9,7 @@ import Start from './pages/Start'
 import Userprotectedrap from './pages/Userprotectedrap'
 import UserLogout from './pages/UserLogout'
 import CaptainHome from './pages/CaptainHome'
+import Riding from './pages/Riding'
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
       <Route path="/captain-signup" element={<CaptainSignup />} />
       <Route path="/captain-login" element={<CaptainLogin />} />
       <Route path="/user-register" element={<UserRegister />} />
+      <Route path="/riding" element={<Riding />} />
       <Route path="/user-login" element={<UserLogin />} />
       <Route path="/home" element={<Userprotectedrap><Home /></Userprotectedrap>} />
       <Route path="/user/logout" element={<Userprotectedrap>
