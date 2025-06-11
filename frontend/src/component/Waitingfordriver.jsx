@@ -1,8 +1,7 @@
 import React, { forwardRef } from 'react';
 
 const Waitingfordriver = forwardRef(
-  ({ waitingForDriver, setwaitingForDriver,  selectedVehicle }, ref) =>
-  {
+  ({  setwaitingForDriver, selectedVehicle }, ref) => {
     if (!selectedVehicle) return null; // Prevent render if no vehicle is selected
 
     return (
@@ -14,7 +13,7 @@ const Waitingfordriver = forwardRef(
         <button
           className="absolute top-3 right-6 text-2xl"
           onClick={() => {
-            
+             setwaitingForDriver(false);
           }}
         >
           <i className="ri-close-line"></i>
@@ -43,7 +42,7 @@ const Waitingfordriver = forwardRef(
 
         <button
           className="bg-black text-white py-2 px-6 rounded-lg w-full"
-          onClick={() => setwaitingForDriver(false)}
+          onClick={() =>  setwaitingForDriver(false)}
         >
           Cancel Ride
         </button>
@@ -53,3 +52,4 @@ const Waitingfordriver = forwardRef(
 );
 
 export default Waitingfordriver;
+

@@ -1,19 +1,20 @@
-import React from "react";
+import React from 'react'
 
-function Ridepopup(props) {
+function ConfirmRidepopup(props) {
   return (
-    <div className="relative p-4">
+    <div>
+          <div className="relative p-4">
       {/* Close Button */}
       <button
         type="button"
         className="absolute top-3 right-6 text-2xl text-gray-600 hover:text-black"
-        onClick={() => props.setridePopupPannel(false)}
+        onClick={() => props.setConfirmridePopupPannel(false)}
       >
         <i className="ri-close-line"></i>
       </button>
 
       {/* Title */}
-      <h3 className="text-xl font-semibold mb-4">New Ride Available</h3>
+      <h3 className="text-xl font-semibold mb-4">Confirm this ride to start</h3>
 
       {/* Driver Info */}
       <div className="flex items-center justify-between bg-yellow-400 p-3 rounded-lg">
@@ -65,20 +66,24 @@ function Ridepopup(props) {
       <button
         type="button"
         className="bg-green-500 text-white py-2 px-6 rounded-lg w-full mt-6 hover:bg-green-600"
-        onClick={() => props.setConfirmridePopupPannel(true)}
+        
       >
-        Accept Ride
+        Confirm Ride
       </button>
 
       <button
         type="button"
-        className="bg-red-700 text-white font-semibold py-2 px-6 rounded-lg w-full mt-3 hover:bg-gray-300"
-        onClick={() => props.setridePopupPannel(false)}
+        className="bg-gray-200 text-gray-700 font-semibold py-2 px-6 rounded-lg w-full mt-3 hover:bg-gray-300"
+       onClick={() => {
+            props.setConfirmridePopupPannel(false);
+            props.setridePopupPannel(false);
+          }}
       >
-         Ignore
+        Cancle
       </button>
     </div>
-  );
+    </div>
+  )
 }
 
-export default Ridepopup;
+export default ConfirmRidepopup

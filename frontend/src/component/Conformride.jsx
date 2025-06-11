@@ -7,7 +7,7 @@ const Conformride = forwardRef(({ selectedVehicle, setConfirmRidePanel, setvehic
     <div
       ref={ref}
       className="fixed w-full bottom-0 bg-white rounded-t-3xl p-6 shadow-lg"
-      style={{ transform: "translateY(100%)" }}
+       
     >
       <button
         className="absolute top-3 right-6 text-2xl"
