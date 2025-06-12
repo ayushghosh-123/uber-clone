@@ -23,5 +23,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/user', userRoutes);
 app.use('/captain', captainRoutes);
 
+const mapRoute = require('./routes/maps.routes')
+app.use('/maps', mapRoute)
 
 module.exports = app;
