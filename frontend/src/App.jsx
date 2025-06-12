@@ -10,6 +10,7 @@ import Userprotectedrap from './pages/Userprotectedrap'
 import UserLogout from './pages/UserLogout'
 import CaptainHome from './pages/CaptainHome'
 import Riding from './pages/Riding'
+import CaptainRiding from './pages/CaptainRiding'
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
         <UserLogout/>
       </Userprotectedrap>} />
       <Route path='/captain-home' element={<CaptainHome />} />
+      <Route  path='/captain-riding' element={<CaptainRiding/>}/>
     </Routes>
     </>
   )
