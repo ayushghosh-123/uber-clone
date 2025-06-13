@@ -4,7 +4,7 @@ import BikeImg from "../images/UberBike.png";
 import AutoImg from "../images/uberauto.png";
 
 const Vehiclepannel = forwardRef(
-  ({ setVehiclePanel, setConfirmRidePanel, setSelectedVehicle }, ref) => {
+  ({ setVehiclePanel, setConfirmRidePanel, setSelectedVehicle ,  fare , selectedVehicle}, ref) => {
     return (
       <div
         ref={ref}
@@ -33,6 +33,7 @@ const Vehiclepannel = forwardRef(
                 img: CarImg,
               });
               setConfirmRidePanel(true);
+              selectedVehicle('car')
               setVehiclePanel(false);
             }}
             className="flex border-2 border-gray-200 active:border-black rounded-xl w-full justify-between items-center p-4 cursor-pointer transition"
@@ -45,7 +46,7 @@ const Vehiclepannel = forwardRef(
               <h5 className="text-sm text-gray-600">2 mins away</h5>
               <p className="text-xs text-gray-500">Affordable, compact price</p>
             </div>
-            <h2 className="text-xl font-semibold text-green-700">$45</h2>
+            <h2 className="text-xl font-semibold text-green-700">{fare.car}</h2>
           </div>
 
           {/* Moto */}
@@ -59,6 +60,7 @@ const Vehiclepannel = forwardRef(
                 img: BikeImg,
               });
               setConfirmRidePanel(true);
+              selectedVehicle('moto')
               setVehiclePanel(false);
             }}
             className="flex border-2 border-gray-200 active:border-black rounded-xl w-full justify-between items-center p-4 cursor-pointer transition"
@@ -71,7 +73,7 @@ const Vehiclepannel = forwardRef(
               <h5 className="text-sm text-gray-600">3 mins away</h5>
               <p className="text-xs text-gray-500">Affordable, Motorcycle ride</p>
             </div>
-            <h2 className="text-xl font-semibold text-green-700">$20</h2>
+            <h2 className="text-xl font-semibold text-green-700">{fare.moto}</h2>
           </div>
 
           {/* UberAuto */}
@@ -85,6 +87,7 @@ const Vehiclepannel = forwardRef(
                 img: AutoImg,
               });
               setConfirmRidePanel(true);
+              selectedVehicle('auto')
               setVehiclePanel(false);
             }}
             className="flex border-2 border-gray-200 active:border-black rounded-xl w-full justify-between items-center p-4 cursor-pointer transition"
@@ -97,7 +100,7 @@ const Vehiclepannel = forwardRef(
               <h5 className="text-sm text-gray-600">3 mins away</h5>
               <p className="text-xs text-gray-500">Affordable, Auto ride</p>
             </div>
-            <h2 className="text-xl font-semibold text-green-700">$120</h2>
+            <h2 className="text-xl font-semibold text-green-700">{fare.auto}</h2>
           </div>
         </div>
       </div>

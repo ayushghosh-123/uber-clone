@@ -760,6 +760,101 @@ curl -X GET http://localhost:PORT/captain/logout \
   -H "Authorization: Bearer <jwt_token>"
 ```
 
+## Get Fare Estimate Endpoint Documentation
+
+### Endpoint
+
+`GET /ride/get-fare`
+
+---
+
+### Description
+
+This endpoint calculates and returns fare estimates for different vehicle types based on the provided pickup and destination addresses. The user must be authenticated.
+
+---
+
+### Query Parameters
+
+- `pickup` (string, required): The pickup location address (minimum 3 characters).
+- `destination` (string, required): The destination address (minimum 3 characters).
+
+---
+
+### Authentication
+
+- **Required:** Yes (JWT token)
+- **How:**  
+  - Header: `Authorization: Bearer <token>`  
+  - Or Cookie: `token=<token>`
+
+---
+
+### Responses
+
+#### Success
+
+- **Status Code:** `200 OK`
+- **Body:**
+    ```json
+    {
+      "auto": 45,
+      "car": 60,
+      "moto": 30
+    }
+    ```
+  Each key represents a vehicle type and the value is the estimated fare.
+
+#### Validation Error
+
+- **Status Code:** `400 Bad Request`
+- **Body:**
+    ```json
+    {
+      "errors": [
+        {
+          "msg": "Invalid pickup point",
+          "param": "pickup",
+          "location": "query"
+        },
+        {
+          "msg": "Invalid destination point",
+          "param": "destination",
+          "location": "query"
+        }
+      ]
+    }
+    ```
+
+#### Unauthorized
+
+- **Status Code:** `401 Unauthorized`
+- **Body:**
+    ```json
+    {
+      "message": "Authentication token is missing"
+    }
+    ```
+
+#### Server Error
+
+- **Status Code:** `500 Internal Server Error`
+- **Body:**
+    ```json
+    {
+      "message": "Internal server Error"
+    }
+    ```
+
+---
+
+### Example Request
+
+```bash
+curl -X GET "http://localhost:PORT/ride/get-fare?pickup=123+Main+St&destination=456+Elm+St" \
+  -H "Authorization: Bearer <jwt_token>"
+```
+
 ---
 
 ## Notes

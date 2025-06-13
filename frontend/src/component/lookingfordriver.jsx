@@ -1,7 +1,7 @@
 import React, { forwardRef } from "react";
 
 const Lookingfordriver = forwardRef(
-  ({ selectedVehicle, setConfirmRidePanel, setvehicleFound, setwaitingForDriver }, ref) => {
+  ({ selectedVehicle, setConfirmRidePanel, setvehicleFound, setwaitingForDriver,  pickup, destination, fare, vehicleType }, ref) => {
     if (!selectedVehicle) return null;
 
     return (
@@ -27,23 +27,29 @@ const Lookingfordriver = forwardRef(
             alt={selectedVehicle.name}
             className="h-16 w-16 object-contain"
           />
-          <div>
-            <h4 className="font-bold text-lg">{selectedVehicle.name}</h4>
-            <p>{selectedVehicle.seats} seats available</p>
-            <p>Waiting time: {selectedVehicle.waitTime}</p>
+          <div className="flex flex-col gap-1">
+            <h4 className="font-bold text-xl text-gray-800">
+              {selectedVehicle.name}
+            </h4>
+            <p className="text-sm text-gray-600">
+              <span className="font-medium">Pickup:</span> {pickup}
+            </p>
+            <p className="text-sm text-gray-600">
+              <span className="font-medium">Destination:</span> {destination}
+            </p>
           </div>
           <div className="ml-auto text-xl font-semibold text-green-700">
-            ${selectedVehicle.price}
+            {fare[vehicleType]}
           </div>
         </div>
-
+{/* 
         <button
           className="bg-black text-white py-2 px-6 rounded-lg w-full"
           onClick={() => {setwaitingForDriver(true); setConfirmRidePanel(false);
           setvehicleFound(false);}}
         >
           Confirm Ride
-        </button>
+        </button> */}
       </div>
     );
   }
