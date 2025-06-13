@@ -12,7 +12,9 @@ const Lookingfordriver = forwardRef(
       >
         <button
           className="absolute top-3 right-6 text-2xl"
-          onClick={() => setvehicleFound(false)}
+          onClick={() =>{ 
+            setvehicleFound(false);
+           }}
         >
           <i className="ri-close-line"></i>
         </button>
@@ -37,7 +39,8 @@ const Lookingfordriver = forwardRef(
 
         <button
           className="bg-black text-white py-2 px-6 rounded-lg w-full"
-          onClick={() => setwaitingForDriver(true)}
+          onClick={() => {setwaitingForDriver(true); setConfirmRidePanel(false);
+          setvehicleFound(false);}}
         >
           Confirm Ride
         </button>

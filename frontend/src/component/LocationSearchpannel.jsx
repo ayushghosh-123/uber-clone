@@ -1,35 +1,36 @@
+// LocationSearchpannel.jsx
 import React from "react";
 
-function LocationSearchpannel({ setVehiclePanel, setpanelopen }) {
-  const locations = [
-    "24B, near KAPPOR'S CAFE, SHERIYAN CODING SCHOOL, Bhopal",
-    "25A, near XYZ CAFE, ABC SCHOOL, Bhopal",
-    "26C, near PQR CAFE, DEF SCHOOL, Bhopal",
-    "27D, near LMN CAFE, GHI SCHOOL, Bhopal",
-  ];
+function LocationSearchpannel({ suggestions, setVehiclePanel, setPanelOpen, setPickup, setDestination, activeField }) {
 
-  const handleSelect = () => {
-    setVehiclePanel(true);   // Open vehicle panel
-    setpanelopen(false);     // Close location panel
-  };
+    const handleSuggestionClick = (suggestion) => {
+        // When setting pickup/destination, you might want to store the full object
+        // or just the description depending on what your backend expects later.
+        // For now, let's assume you want to store the description string.
+        if (activeField === 'pickup') {
+            setPickup(suggestion.description) // Use suggestion.description here
+        } else if (activeField === 'destination') {
+            setDestination(suggestion.description) // Use suggestion.description here
+        }
+        // setVehiclePanel(true)
+        // setPanelOpen(false)
+    }
 
-  return (
-    <div className="p-5">
-      {locations.map((location, index) => (
-        <div
-          key={index}
-          onClick={handleSelect}
-          className="flex items-center border-2 p-3 border-gray-300 active:border-black my-4 justify-start gap-4 cursor-pointer"
-        >
-          <h2 className="bg-[#eee] w-12 h-8 flex justify-center items-center rounded-full">
-            <i className="ri-map-pin-2-fill"></i>
-          </h2>
-          <h4 className="font-medium">{location}</h4>
+    return (
+        <div>
+            {/* Display fetched suggestions */}
+            {
+                // Ensure suggestions is an array before mapping
+                // Although the error implies it is an array of objects, not just objects.
+                Array.isArray(suggestions) && suggestions.map((elem, idx) => (
+                    <div key={idx} onClick={() => handleSuggestionClick(elem)} className='flex gap-4 border-2 p-3 border-gray-50 active:border-black rounded-xl items-center my-2 justify-start'>
+                        <h2 className='bg-[#eee] h-8 flex items-center justify-center w-12 rounded-full'><i className="ri-map-pin-fill"></i></h2>
+                        <h4 className='font-medium'>{elem.description}</h4> {/* <--- FIXED HERE */}
+                    </div>
+                ))
+            }
         </div>
-      ))}
-    </div>
-  );
+    );
 }
 
 export default LocationSearchpannel;
-

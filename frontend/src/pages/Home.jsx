@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import Uberimage from "../images/uber.png";
 import map from "../images/map.jpg";
 import gsap from "gsap";
@@ -10,6 +10,7 @@ import Conformride from "../component/Conformride";
 import Lookingfordriver from "../component/lookingfordriver";
 import Waitingfordriver from "../component/Waitingfordriver";
 import Riding from "./Riding";
+import axios from "axios";
 
 gsap.registerPlugin(useGSAP);
 
@@ -20,26 +21,81 @@ function Home() {
   const [vehiclePanel, setVehiclePanel] = useState(false);
   const [confirmRidePanel, setConfirmRidePanel] = useState(false);
   const [vehicleFound, setvehicleFound] = useState(false);
-  const [waitingForDriver, setwaitingForDriver] = useState(false)
+  const [waitingForDriver, setwaitingForDriver] = useState(false);
   const [selectedVehicle, setSelectedVehicle] = useState(null);
+  const [pickupSuggestions, setPickupSuggestions] = useState([]);
+  const [destinationSuggestions, setDestinationSuggestions] = useState([]);
+  const [activeField, setActiveField] = useState(null);
 
-  const formRef = useRef(null);
+  const panelRef = useRef(null);
   const panelCloseRef = useRef(null);
   const vehiclePanelRef = useRef(null);
   const confirmRideRef = useRef(null);
-  const vehicleFoundeRef = useRef(null); // ✅ Correct ref 
-  const waitingForDriverRef = useRef(null); // ✅ Correct ref 
+  const vehicleFoundRef = useRef(null);
+  const waitingForDriverRef = useRef(null);
+
+  const handlePickupChange = async (e) => {
+    const inputValue = e.target.value; // Capture the input value once
+    setPickup(inputValue);
+
+    if (inputValue.length < 3) {
+      setPickupSuggestions([]); // Clear suggestions if input is too short
+      return; // Stop execution here, don't make the API call
+    }
+
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/maps/get-suggestion`,
+        {
+          params: { input: inputValue }, // Use the captured inputValue
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      setPickupSuggestions(response.data);
+    } catch (error) {
+      console.error("Error fetching pickup suggestions:", error);
+      // It's good practice to clear suggestions on error, or handle it gracefully
+      setPickupSuggestions([]);
+    }
+  };
+
+  const handleDestinationChange = async (e) => {
+    const inputValue = e.target.value; // Capture the input value once
+    setDestination(inputValue);
+
+    if (inputValue.length < 3) {
+      setDestinationSuggestions([]); // Clear suggestions if input is too short
+      return; // Stop execution here, don't make the API call
+    }
+
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/maps/get-suggestion`,
+        {
+          params: { input: inputValue }, // Use the captured inputValue
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      setDestinationSuggestions(response.data);
+    } catch (error) {
+      console.error("Error fetching destination suggestions:", error);
+      setDestinationSuggestions([]);
+    }
+  };
 
   const submitHandler = (e) => {
     e.preventDefault();
-    console.log("Pickup:", pickup, "Destination:", destination);
+    setPanel(true);
   };
 
-  // Animate location panel
   useEffect(() => {
-    if (!formRef.current || !panelCloseRef.current) return;
+    if (!panelRef.current || !panelCloseRef.current) return;
 
-    gsap.to(formRef.current, {
+    gsap.to(panelRef.current, {
       height: panel ? "430px" : "0px",
       duration: 0.5,
       ease: "power2.out",
@@ -51,7 +107,6 @@ function Home() {
     });
   }, [panel]);
 
-  // Animate vehicle panel
   useGSAP(() => {
     if (vehiclePanelRef.current) {
       gsap.to(vehiclePanelRef.current, {
@@ -62,7 +117,6 @@ function Home() {
     }
   }, [vehiclePanel]);
 
-  // Animate confirm ride panel
   useGSAP(() => {
     if (confirmRideRef.current) {
       gsap.to(confirmRideRef.current, {
@@ -73,10 +127,9 @@ function Home() {
     }
   }, [confirmRidePanel]);
 
-  // Animate "looking for driver" panel
   useGSAP(() => {
-    if (vehicleFoundeRef.current) {
-      gsap.to(vehicleFoundeRef.current, {
+    if (vehicleFoundRef.current) {
+      gsap.to(vehicleFoundRef.current, {
         y: vehicleFound ? 0 : "100%",
         duration: 0.5,
         ease: "power2.out",
@@ -87,7 +140,7 @@ function Home() {
   useGSAP(() => {
     if (waitingForDriverRef.current) {
       gsap.to(waitingForDriverRef.current, {
-        y: vehicleFound ? 0 : "100%",
+        y: waitingForDriver ? 0 : "100%",
         duration: 0.5,
         ease: "power2.out",
       });
@@ -102,7 +155,7 @@ function Home() {
         <img src={map} alt="map" className="h-full w-full object-cover" />
       </div>
 
-      {/* Bottom White Panel */}
+      {/* Main Bottom Panel */}
       <div className="absolute bottom-0 w-full flex flex-col justify-end">
         <div className="p-5 bg-white h-[30%] relative">
           <h5
@@ -114,19 +167,24 @@ function Home() {
           </h5>
           <h4 className="text-2xl font-semibold mb-4">Find a trip</h4>
           <form onSubmit={submitHandler}>
-            <div className="absolute h-16 w-1 top-[40%] left-8 bg-gray-700 rounded-full"></div>
             <input
               value={pickup}
-              onChange={(e) => setPickup(e.target.value)}
-              onClick={() => setPanel(true)}
+              onChange={handlePickupChange}
+              onFocus={() => { // Using onFocus is better for activating the panel
+                setPanel(true);
+                setActiveField("pickup");
+              }}
               className="border border-gray-300 px-4 py-2 bg-[#eee] text-lg rounded-lg w-full mb-4"
               type="text"
               placeholder="Enter pickup location"
             />
             <input
               value={destination}
-              onChange={(e) => setDestination(e.target.value)}
-              onClick={() => setPanel(true)}
+              onChange={handleDestinationChange}
+              onFocus={() => { // Using onFocus is better for activating the panel
+                setPanel(true);
+                setActiveField("destination");
+              }}
               className="border border-gray-300 px-4 py-2 bg-[#eee] text-lg rounded-lg w-full mb-4"
               type="text"
               placeholder="Enter destination location"
@@ -140,16 +198,26 @@ function Home() {
           </form>
         </div>
 
-        {/* Animated Location Panel */}
-        <div ref={formRef} className="h-0 bg-white overflow-hidden">
-          <LocationSearchpannel
-            setVehiclePanel={setVehiclePanel}
-            setpanelopen={setPanel}
-          />
+        {/* Location Suggestions Panel */}
+        <div ref={panelRef} className="h-0 bg-white overflow-hidden">
+          {panel && ( // Only render LocationSearchpannel if panel is open
+            <LocationSearchpannel
+              suggestions={
+                activeField === "pickup"
+                  ? pickupSuggestions
+                  : destinationSuggestions
+              }
+              setPanelOpen={setPanel}
+              setVehiclePanel={setVehiclePanel}
+              setPickup={setPickup}
+              setDestination={setDestination}
+              activeField={activeField}
+            />
+          )}
         </div>
       </div>
 
-      {/* Vehicle Panel */}
+      {/* Vehicle Selection */}
       <Vehiclepannel
         ref={vehiclePanelRef}
         setVehiclePanel={setVehiclePanel}
@@ -157,7 +225,7 @@ function Home() {
         setSelectedVehicle={setSelectedVehicle}
       />
 
-      {/* Confirm Ride Panel */}
+      {/* Confirm Ride */}
       <Conformride
         ref={confirmRideRef}
         selectedVehicle={selectedVehicle}
@@ -165,25 +233,25 @@ function Home() {
         setConfirmRidePanel={setConfirmRidePanel}
       />
 
-      {/* Looking for Driver Panel */}
+      {/* Searching Driver */}
       <Lookingfordriver
-        ref={vehicleFoundeRef}
+        ref={vehicleFoundRef}
         selectedVehicle={selectedVehicle}
         setConfirmRidePanel={setConfirmRidePanel}
         setvehicleFound={setvehicleFound}
         setwaitingForDriver={setwaitingForDriver}
       />
 
-      <Waitingfordriver 
-      ref={waitingForDriverRef}
-      selectedVehicle={selectedVehicle}
-      waitingForDriver={waitingForDriver}
-      setwaitingForDriver={setwaitingForDriver}
+      {/* Waiting for Driver */}
+      <Waitingfordriver
+        ref={waitingForDriverRef}
+        selectedVehicle={selectedVehicle}
+        waitingForDriver={waitingForDriver}
+        setwaitingForDriver={setwaitingForDriver}
       />
 
-      <Riding
-      selectedVehicle={selectedVehicle}
-      />
+      {/* Final Ride Screen */}
+      <Riding selectedVehicle={selectedVehicle} />
     </div>
   );
 }
