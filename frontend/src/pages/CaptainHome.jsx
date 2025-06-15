@@ -8,6 +8,7 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import ConfirmRidepopup from "../component/ConfirmRidepopup";
 
+
 function CaptainHome() {
   const [ridePopupPannel, setridePopupPannel] = useState(true);
   const [ConfirmridePopupPannel, setConfirmridePopupPannel] = useState(false);
@@ -34,6 +35,8 @@ function CaptainHome() {
       });
     }
   }, [ConfirmridePopupPannel]);
+
+
 
   return (
     <div className="h-screen flex flex-col">
