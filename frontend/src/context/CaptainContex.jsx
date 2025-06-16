@@ -29,8 +29,7 @@ export const CaptainContext = ({ children }) => {
       }
 
       try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_BASE_URL}/captain/profile`,
+        const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/captain/profile`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

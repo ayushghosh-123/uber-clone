@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useContext } from "react";
 import Uberimage from "../images/uber.png";
 import map from "../images/map.jpg";
 import gsap from "gsap";
@@ -11,6 +11,8 @@ import Lookingfordriver from "../component/lookingfordriver";
 import Waitingfordriver from "../component/Waitingfordriver";
 import Riding from "./Riding";
 import axios from "axios";
+import { SocketContext } from "../context/SocketContex";
+import { UserContext } from "../context/Usercontex";
 
 
 gsap.registerPlugin(useGSAP);
@@ -42,6 +44,16 @@ function Home() {
    * Fetches location suggestions from the API if input length is sufficient.
    * @param {Object} e - The event object from the input change.
    */
+
+  const {sendMessage , receiveMessage} =  useContext(SocketContext)
+  const {user} = useContext(UserContext)
+
+
+  useEffect(() => {
+     console.log(user)
+    sendMessage("join", {userType: "user", userId: user._id})
+  }, [])
+  
   const handlePickupChange = async (e) => {
     const inputValue = e.target.value;
     setPickup(inputValue);

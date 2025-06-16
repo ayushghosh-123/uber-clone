@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import car from "../images/car.png";
 import uber from "../images/uber.png";
@@ -7,6 +7,8 @@ import Ridepopup from "../component/Ridepopup";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import ConfirmRidepopup from "../component/ConfirmRidepopup";
+import { SocketContext } from "../context/SocketContex";
+import { CaptainDataContext } from "../context/CaptainContex";
 
 
 function CaptainHome() {
@@ -15,6 +17,14 @@ function CaptainHome() {
 
   const ridePopupPannelRef = useRef(null);
   const ConfirmridePopupPannelRef = useRef(null);
+
+  const { sendMessage, receiveMessage } = useContext(SocketContext)
+  const { captain } = useContext(CaptainDataContext)
+
+  useEffect(() => {
+     console.log(captain)
+      sendMessage("join", {userType: "captain", userId: captain._id})
+  }, [])
 
   useGSAP(() => {
     if (ridePopupPannelRef.current) {
