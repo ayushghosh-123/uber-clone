@@ -18,18 +18,18 @@ app.use(express.urlencoded({ extended: true }));
 
 // Connect to the database
 const connectDB = require('./db/db');
-connectDB();
+connectDB(); // This assumes connectDB handles its own errors or is awaited
 
 // Routes
-const userRoutes = require('./routes/user.routes');
 const captainRoutes = require('./routes/captain.routes');
 const mapRoutes = require('./routes/maps.routes');
-const rideRoutes = require('./routes/ride.route')
+const rideRoutes = require('./routes/ride.route');
+const userRoutes = require('./routes/user.routes')
 
 app.use('/user', userRoutes);
 app.use('/captain', captainRoutes);
 app.use('/maps', mapRoutes);
-app.use('/ride', rideRoutes)
+app.use('/ride', rideRoutes);
 
 // Export the app
 module.exports = app;

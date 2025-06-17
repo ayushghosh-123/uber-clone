@@ -14,7 +14,6 @@ router.post('/register', [
     body('vehicle.capacity').isInt({ min: 1 }).withMessage('Capacity must be at least 1'),
     body('vehicle.vehicleType').isIn(['car', 'motorcycle', 'auto']).withMessage('Vehicle type must be one of: car, motorcycle, auto'),
 ],
-
 captainController.registerCaptain
 );
 

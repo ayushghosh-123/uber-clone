@@ -7,30 +7,35 @@ import { CaptainDataContext } from "../context/CaptainContex";
 function CaptainLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { captain, setCaptain } = useContext(CaptainDataContext); // Corrected context usage
+  const [errorMessage, setErrorMessage] = useState("");
+  const { setCaptain } = useContext(CaptainDataContext);
   const navigate = useNavigate();
 
   const submitHandler = async (e) => {
     e.preventDefault();
+    setErrorMessage("");
 
-    const captain = { email, password };
+    const credentials = { email, password };
 
     try {
-      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/captain/login`, captain);
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/captain/login`, credentials);
 
       if (response.status === 200) {
         const data = response.data;
-        setCaptain(data.captain); // Correct setter
+        setCaptain(data.captain);
         localStorage.setItem("token", data.token);
         navigate("/captain-home");
-      }
 
-      // Clear input fields
-      setEmail("");
-      setPassword("");
+        setEmail("");
+        setPassword("");
+      }
     } catch (error) {
       console.error("Login failed:", error);
-      alert("Login failed. Please check your credentials.");
+      if (error.response && error.response.data && error.response.data.error) {
+        setErrorMessage(error.response.data.error);
+      } else {
+        setErrorMessage("Login failed. Please check your credentials or try again later.");
+      }
     }
   };
 
@@ -38,6 +43,14 @@ function CaptainLogin() {
     <div className="p-7 flex flex-col justify-between items-center h-screen bg-[#f5f5f5]">
       <div className="w-full max-w-md">
         <img className="w-16 mb-10" src={uberDriverLogo} alt="Uber Driver Logo" />
+
+        <h1 className="text-2xl font-bold mb-5 text-center">Captain Login</h1>
+
+        {errorMessage && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+            <span className="block sm:inline">{errorMessage}</span>
+          </div>
+        )}
 
         <form onSubmit={submitHandler} className="w-full">
           <h3 className="text-lg font-medium mb-2">What's your email?</h3>

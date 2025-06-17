@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import uberDriverLogo from "../images/uber-driver.png"; // Assuming you have a different logo for the captain
+import uberDriverLogo from "../images/uber-driver.png";
 import { Link, useNavigate } from "react-router-dom";
 import { CaptainDataContext } from "../context/CaptainContex";
 import axios from "axios";
@@ -9,19 +9,18 @@ function CaptainSignup() {
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [captainData, setCaptainData] = useState({});
   const [vehicleColor, setVehicleColor] = useState("");
   const [vehiclePlate, setVehiclePlate] = useState("");
   const [vehicleCapacity, setVehicleCapacity] = useState("");
   const [vehicleType, setVehicleType] = useState("");
+  const [errors, setErrors] = useState([]);
 
-  const { captain, setCaptain } = React.useContext(CaptainDataContext); // Use context to set captain data
-  const navigate = useNavigate(); // Optional if redirect needed after login
+  const { setCaptain } = React.useContext(CaptainDataContext);
+  const navigate = useNavigate();
 
   const submitHandler = async (e) => {
     e.preventDefault();
 
-    // Basic example: simulate login
     const captainData = {
       fullname: {
         firstname: firstName,
@@ -32,7 +31,7 @@ function CaptainSignup() {
       vehicle: {
         color: vehicleColor,
         plate: vehiclePlate,
-        capacity: vehicleCapacity,
+        capacity: parseInt(vehicleCapacity, 10),
         vehicleType: vehicleType,
       },
     };
@@ -46,29 +45,34 @@ function CaptainSignup() {
       if (response.status === 201) {
         const { captain, token } = response.data;
 
-        setCaptainData(captain); // or setCaptain
+        setCaptain(captain);
         localStorage.setItem("token", token);
         navigate("/captain-home");
+
+        setEmail("");
+        setPassword("");
+        setFirstName("");
+        setLastName("");
+        setVehicleColor("");
+        setVehiclePlate("");
+        setVehicleCapacity("");
+        setVehicleType("");
+        setErrors([]);
       } else {
         console.error("Signup failed:", response.statusText);
+        setErrors([{ msg: "Signup failed: " + response.statusText }]);
       }
     } catch (error) {
       console.error(
         "Signup Error:",
         error.response?.data?.errors || error.message
       );
+      if (error.response?.data?.errors) {
+        setErrors(error.response.data.errors);
+      } else {
+        setErrors([{ msg: "An unexpected error occurred during signup." }]);
+      }
     }
-
-    // console.log(captainData);
-    // Clear input fields
-    setEmail("");
-    setPassword("");
-    setFirstName("");
-    setLastName("");
-    setVehicleColor("");
-    setVehiclePlate("");
-    setVehicleCapacity("");
-    setVehicleType("");
   };
 
   return (
@@ -76,11 +80,26 @@ function CaptainSignup() {
       <div className="w-full max-w-md">
         <img className="w-16 mb-10" src={uberDriverLogo} alt="Uber Logo" />
         <h1 className="text-2xl font-bold mb-5 text-center">Captain Signup</h1>
+
+        {errors.length > 0 && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+            <strong className="font-bold">Signup Failed!</strong>
+            <span className="block sm:inline"> Please correct the following errors:</span>
+            <ul className="mt-2 list-disc list-inside">
+              {errors.map((error, index) => (
+                <li key={index}>
+                  {error.msg} {error.path && `(${error.path})`}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         <form onSubmit={(e) => submitHandler(e)} className="w-full">
           <h3 className="text-lg font-medium mb-2">What's your name?</h3>
-          <div className="flex  md:flex-row gap-4 mb-5">
+          <div className="flex flex-col md:flex-row gap-4 mb-5">
             <input
-              className="border border-gray-300 p-2 rounded  bg-[#eeeeee] w-1/2 text-lg placeholder:text-base"
+              className="border border-gray-300 p-2 rounded bg-[#eeeeee] w-full md:w-1/2 text-lg placeholder:text-base"
               type="text"
               placeholder="First Name"
               value={firstName}
@@ -88,7 +107,7 @@ function CaptainSignup() {
               required
             />
             <input
-              className="border border-gray-300 p-2 rounded  bg-[#eeeeee] w-1/2 text-lg placeholder:text-base"
+              className="border border-gray-300 p-2 rounded bg-[#eeeeee] w-full md:w-1/2 text-lg placeholder:text-base"
               type="text"
               placeholder="Last Name"
               value={lastName}
@@ -118,7 +137,7 @@ function CaptainSignup() {
           <h3 className="text-lg font-medium mb-2">Vehicle Information</h3>
           <div className="flex flex-col md:flex-row gap-2 mb-5">
             <input
-              className="border border-gray-300 p-2 rounded mb-5 bg-[#eeeeee] w-full text-lg placeholder:text-base"
+              className="border border-gray-300 p-2 rounded bg-[#eeeeee] w-full text-lg placeholder:text-base"
               type="text"
               placeholder="Vehicle Color"
               value={vehicleColor}
@@ -126,15 +145,17 @@ function CaptainSignup() {
               required
             />
             <input
-              className="border border-gray-300 p-2 rounded mb-5 bg-[#eeeeee] w-full text-lg placeholder:text-base"
+              className="border border-gray-300 p-2 rounded bg-[#eeeeee] w-full text-lg placeholder:text-base"
               type="text"
               placeholder="Vehicle Plate"
               value={vehiclePlate}
               onChange={(e) => setVehiclePlate(e.target.value)}
               required
             />
+          </div>
+          <div className="flex flex-col md:flex-row gap-2 mb-5">
             <input
-              className="border border-gray-300 p-2 rounded mb-5 bg-[#eeeeee] w-full text-lg placeholder:text-base"
+              className="border border-gray-300 p-2 rounded bg-[#eeeeee] w-full text-lg placeholder:text-base"
               type="number"
               placeholder="Vehicle Capacity"
               value={vehicleCapacity}
@@ -142,7 +163,7 @@ function CaptainSignup() {
               required
             />
             <select
-              className="border border-gray-300 p-2 rounded mb-5 bg-[#eeeeee] w-full text-lg"
+              className="border border-gray-300 p-2 rounded bg-[#eeeeee] w-full text-lg"
               value={vehicleType}
               onChange={(e) => setVehicleType(e.target.value)}
               required
@@ -152,7 +173,7 @@ function CaptainSignup() {
               </option>
               <option value="car">Car</option>
               <option value="motorcycle">Motorcycle</option>
-              <option value="auto ">Auto </option>
+              <option value="auto">Auto</option>
             </select>
           </div>
 
@@ -165,7 +186,7 @@ function CaptainSignup() {
 
           <p className="text-center">
             Already have an account?
-            <Link className="text-blue-500" to="/captain-login">
+            <Link className="text-blue-500 ml-1" to="/captain-login">
               Captain-Login
             </Link>
           </p>

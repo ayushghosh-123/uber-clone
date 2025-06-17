@@ -87,18 +87,28 @@ module.exports.getAutoSuggestion = async (input) => {
   }
 };
 
-module.exports.getCaptainInTheRadious = async (lat, lng, radious) =>{
 
-  //  radious in km
-  console.log(lat, lng ,radious )
-  
+module.exports.getCaptainInTheRadious = async (lat, lng, radious) => {
+  const radiusInRadians = radious / 6371;
+  console.log(`Input Lat: ${lat}, Lng: ${lng}`); // Added for clearer debugging
+  console.log(`Radius in radians: ${radiusInRadians}`);
+
+  try {
     const captains = await captainModel.find({
-      location : {
-         sgeowithin: {
-              scenterSphere : [ [lat, lng], radious/ 6371]
-         }
+      location: {
+        $geoWithin: {
+          $centerSphere: [
+            [lng, lat], // CORRECT ORDER: [longitude, latitude]
+            radiusInRadians
+          ]
+        }
       }
     });
-    console.log(captains)
+    console.log(`Found ${captains.length} captains.`); // Added for clearer debugging
+    console.log(captains);
     return captains;
-} 
+  } catch (error) {
+    console.error("Error fetching captains in radius:", error);
+    throw new Error("Could not retrieve captains in the specified radius.");
+  }
+};
