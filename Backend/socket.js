@@ -15,7 +15,8 @@ function initializeSocket(server) {
   io.on("connection", (socket) => {
     console.log(`Client connected: ${socket.id}`);
 
-    socket.on("join", async (data) => {
+    socket.on("join", async (data) => 
+    {
       const { userId, userType } = data;
       console.log(`user ${userId} joint as ${userType}`)
       console.log(socket.id)
@@ -24,13 +25,22 @@ function initializeSocket(server) {
         if (userType === "user") {
           await UserModel.findByIdAndUpdate(userId, { socketId: socket.id });
         } else if (userType === "captain") {
-          await CaptainModel.findByIdAndUpdate(userId, { socketId: socket.id });
+          await CaptainModel.findByIdAndUpdate(userId, { socketID: socket.id });
         }
         console.log(`Socket ID ${socket.id} saved for ${userType}: ${userId}`);
       } catch (err) {
         console.error("Error saving socket ID to DB:", err);
       }
     });
+
+    socket.on('update-location-captain', async(data) =>{
+      const {userId , userType, location} = data
+      if(!location || !location.ltd || !location.lng){
+        return socket.emit('error', {message: "Invalid location dat"})
+      }
+        await CaptainModel.findByIdAndUpdate(userId, {location : {ltd:location.ltd, lbng: location.lng}})
+      
+    })
 
     socket.on("disconnect", () => {
       console.log(`Client disconnected: ${socket.id}`);

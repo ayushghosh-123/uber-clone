@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
@@ -67,10 +67,10 @@ const captainSchema = new mongoose.Schema({
     },
 
     location: {
-        latitude: {
+        lat: {
             type: Number,
         },
-        longitude: {
+        lng: {
             type: Number,
         }
     }
@@ -81,8 +81,6 @@ captainSchema.methods.generateAuthToken = async function() {
     const token = jwt.sign({ _id: captain._id.toString() }, process.env.JWT_SECRET, { expiresIn: '24h' });
     return token;
 };
-
-
 
 
 

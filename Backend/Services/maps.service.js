@@ -1,4 +1,6 @@
 const axios = require("axios");
+const { listIndexes } = require("../models/user.model");
+const captainModel = require("../models/captain.model");
 
 module.exports.getAddressCoordinate = async (address) => {
   try {
@@ -84,3 +86,19 @@ module.exports.getAutoSuggestion = async (input) => {
     throw new Error("Failed to fetch autocomplete suggestions");
   }
 };
+
+module.exports.getCaptainInTheRadious = async (lat, lng, radious) =>{
+
+  //  radious in km
+  console.log(lat, lng ,radious )
+  
+    const captains = await captainModel.find({
+      location : {
+         sgeowithin: {
+              scenterSphere : [ [lat, lng], radious/ 6371]
+         }
+      }
+    });
+    console.log(captains)
+    return captains;
+} 

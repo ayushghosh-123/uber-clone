@@ -3,7 +3,7 @@ import { UserContext } from '../context/Usercontex';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'
 
-function Userprotectedrap({ children }) {
+function Userprotectedwrap({ children }) {
   const { user , setUser } = useContext(UserContext);
   const [isloading, setIsloading] = useState(true)
   const token = localStorage.getItem('token');
@@ -41,4 +41,4 @@ function Userprotectedrap({ children }) {
   return <>{children}</>;
 }
 
-export default Userprotectedrap
+export default Userprotectedwrap

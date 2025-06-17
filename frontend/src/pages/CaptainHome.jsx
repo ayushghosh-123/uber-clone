@@ -24,6 +24,26 @@ function CaptainHome() {
   useEffect(() => {
      console.log(captain)
       sendMessage("join", {userType: "captain", userId: captain._id})
+
+      const intervalId = setInterval(() => {
+        if (navigator.geolocation && captain?._id) {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              sendMessage("update-location-captain", {
+                userId: captain._id,
+                ltd: position.coords.latitude,
+                lng: position.coords.longitude,
+              });
+            },
+            (error) => {
+              console.error("Geolocation error:", error);
+            }
+          );
+        }
+      }, 10000);
+      
+
+      return () => clearInterval(intervalId);
   }, [])
 
   useGSAP(() => {
