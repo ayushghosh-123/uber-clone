@@ -12,6 +12,6 @@ const server = http.createServer(app);
 // Attach Socket.IO to the HTTP server
 initializeSocket(server); // ✅ Correct function name
 
-server.listen(PORT,'0.0.0.0', () => {
+server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
