@@ -101,7 +101,7 @@ Start backend:
 
 ```bash
 cd backend
-npm run dev
+npx nodemon server.js
 ```
 
 Start frontend:
